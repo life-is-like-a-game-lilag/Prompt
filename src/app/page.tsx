@@ -112,10 +112,74 @@ export default function Home() {
           </section>
         </header>
         
-        {/* 기본 메시지 */}
-        <div className="text-center theme-text-secondary">
-          <p>프롬프트 관리 시스템을 구축 중입니다...</p>
-        </div>
+        {/* 프롬프트 검색 및 필터링 섹션 */}
+        <section className="mb-12 lg:mb-16" aria-labelledby="search-section" id="search">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl lg:rounded-3xl p-6 lg:p-8 shadow-xl border border-gray-200 dark:border-gray-700">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 lg:mb-8">
+              <div className="mb-4 lg:mb-0">
+                <h2 id="search-section" className="text-2xl lg:text-3xl font-bold theme-text-primary mb-2">
+                  🔍 프롬프트 검색
+                </h2>
+                <p className="theme-text-secondary text-sm lg:text-base">
+                  저장된 프롬프트를 빠르게 찾아보세요
+                </p>
+              </div>
+            </div>
+            
+            {/* 검색 입력 및 필터 */}
+            <div className="space-y-4 lg:space-y-6">
+              {/* 검색 입력 */}
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 lg:h-6 lg:w-6 theme-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder="제목, 설명, 태그로 검색..."
+                  className="w-full pl-12 pr-4 py-3 lg:py-4 border border-gray-300 dark:border-gray-600 rounded-xl lg:rounded-2xl theme-input focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base lg:text-lg"
+                  aria-label="프롬프트 검색"
+                />
+              </div>
+              
+              {/* 필터 및 정렬 */}
+              <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
+                {/* 역할 필터 */}
+                <select
+                  className="flex-1 px-4 py-3 lg:py-4 border border-gray-300 dark:border-gray-600 rounded-xl lg:rounded-2xl theme-input focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm lg:text-base"
+                  aria-label="역할별 필터"
+                >
+                  <option value="">모든 역할</option>
+                  <option value="assistant">AI 어시스턴트</option>
+                  <option value="creative">창작 도우미</option>
+                  <option value="technical">기술 전문가</option>
+                  <option value="educational">교육 도우미</option>
+                </select>
+                
+                {/* 정렬 */}
+                <select
+                  className="flex-1 px-4 py-3 lg:py-4 border border-gray-300 dark:border-gray-600 rounded-xl lg:rounded-2xl theme-input focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm lg:text-base"
+                  aria-label="정렬 기준"
+                >
+                  <option value="newest">최신순</option>
+                  <option value="oldest">오래된순</option>
+                  <option value="alphabetical">가나다순</option>
+                  <option value="usage">사용 빈도순</option>
+                </select>
+                
+                {/* 검색 버튼 */}
+                <button
+                  type="button"
+                  className="px-6 py-3 lg:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl lg:rounded-2xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-75 text-sm lg:text-base min-w-[80px] lg:min-w-[100px]"
+                  aria-label="검색 실행"
+                >
+                  검색
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );
