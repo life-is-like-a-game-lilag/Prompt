@@ -28,63 +28,145 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import promptsRouter from "./prompts";
-import recommendRouter from "./recommend";
+import promptsRouter from "./routes/prompts";
+import recommendRouter from "./routes/recommend";
 import templatesRouter from "./templates";
-import { setupSwagger } from "./swagger";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./swagger";
+import { logger } from "./utils/logger";
 
-// 환경변수 로드 (.env 파일에서 DATABASE_URL, PORT 등)
+// 환경변수 로드
 dotenv.config();
 
-// Express 애플리케이션 인스턴스 생성
 const app = express();
-const PORT = process.env.PORT || 4000; // 기본 포트 4000, 환경변수로 변경 가능
+const PORT = process.env.PORT || 4000;
+
+// 환경변수 검증
+const requiredEnvVars = ['DATABASE_URL', 'NODE_ENV'];
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+  logger.error(`필수 환경변수가 누락되었습니다: ${missingEnvVars.join(', ')}`);
+  console.warn(`⚠️  누락된 환경변수: ${missingEnvVars.join(', ')}`);
+  console.warn('⚠️  일부 기능이 제한될 수 있습니다.');
+}
+
+// CORS 설정 (프론트엔드 연동)
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:3002',
+    'https://your-frontend-domain.com' // 배포 시 실제 도메인으로 변경
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 
 // 미들웨어 설정
-app.use(cors()); // CORS 허용 (프론트엔드 연동용)
-app.use(express.json()); // JSON 요청 바디 파싱
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-/**
- * 루트 엔드포인트 - 서버 실행 상태 확인
- * GET /
- */
-app.get("/", (_req, res) => {
-  res.send("Backend API is running");
+// 요청 로깅 미들웨어
+app.use((req, res, next) => {
+  logger.info(`${req.method} ${req.path}`, {
+    context: {
+      userAgent: req.get('User-Agent'),
+      ip: req.ip,
+      query: req.query,
+      body: req.method === 'POST' ? JSON.stringify(req.body).substring(0, 100) : undefined
+    }
+  });
+  next();
 });
 
-/**
- * 헬스체크 엔드포인트 - 서버 및 데이터베이스 연결 상태 확인
- * GET /ping
- * 
- * 응답 예시:
- * - 성공: { "success": true, "time": "2025-06-16T10:30:00.000Z" }
- * - 실패: { "success": false, "error": "connection refused" }
- */
-app.get("/ping", async (_req, res) => {
-  try {
-    const { pingDB } = await import("./db");
-    const result = await pingDB();
-    res.json({ success: true, time: result.now });
-  } catch (err) {
-    res.status(500).json({ success: false, error: String(err) });
+// API 문서 (임시 주석처리)
+// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// 라우터 설정 (모두 임시 주석처리)
+// app.use("/prompts", promptsRouter);
+// app.use("/recommend", recommendRouter);
+// app.use("/templates", templatesRouter);
+
+// 헬스체크 엔드포인트
+app.get("/health", (req, res) => {
+  res.json({
+    status: "OK",
+    message: "프롬프트 작성기 API 서버가 정상 작동 중입니다.",
+    version: "3.1.0",
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+// 기본 라우트
+app.get("/", (req, res) => {
+  res.json({
+    message: "🎯 프롬프트 작성기 API 서버",
+    version: "3.1.0",
+    documentation: "/api-docs",
+    endpoints: {
+      health: "/health",
+      prompts: "/prompts",
+      recommend: "/recommend",
+      templates: "/templates"
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
+// 404 핸들러
+app.use("*", (req, res) => {
+  logger.warn(`404 - 존재하지 않는 경로: ${req.method} ${req.originalUrl}`);
+  res.status(404).json({
+    success: false,
+    error: "요청하신 API 엔드포인트를 찾을 수 없습니다.",
+    path: req.originalUrl,
+    method: req.method,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// 전역 에러 핸들러
+app.use((err: any, req: any, res: any, next: any) => {
+  logger.error('서버 오류', err);
+  
+  res.status(err.status || 500).json({
+    success: false,
+    error: process.env.NODE_ENV === 'production' 
+      ? '서버 내부 오류가 발생했습니다.'
+      : err.message,
+    timestamp: new Date().toISOString(),
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+  });
+});
+
+// 서버 시작
+app.listen(PORT, () => {
+  logger.info(`서버가 포트 ${PORT}에서 시작되었습니다.`);
+  console.log(`🚀 프롬프트 작성기 API 서버 시작됨`);
+  console.log(`📍 서버 주소: http://localhost:${PORT}`);
+  console.log(`📚 API 문서: http://localhost:${PORT}/api-docs`);
+  console.log(`💾 환경: ${process.env.NODE_ENV || 'development'}`);
+  
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`🔧 개발 모드에서 실행 중 - 상세 로그 활성화`);
   }
 });
 
-// API 라우터 등록
-app.use("/prompts", promptsRouter);     // 기본 프롬프트 관리 API
-app.use("/recommend", recommendRouter); // AI 모델 추천 API
-app.use("/templates", templatesRouter); // 템플릿 관리 API (핵심)
+// Graceful shutdown
+process.on('SIGINT', () => {
+  logger.info('서버 종료 시그널 받음 (SIGINT)');
+  console.log('\n🛑 서버를 안전하게 종료합니다...');
+  process.exit(0);
+});
 
-// Swagger API 문서화 설정
-// 접속: http://localhost:4000/api-docs
-setupSwagger(app);
+process.on('SIGTERM', () => {
+  logger.info('서버 종료 시그널 받음 (SIGTERM)');
+  console.log('\n🛑 서버를 안전하게 종료합니다...');
+  process.exit(0);
+});
 
-/**
- * 서버 시작
- * 환경변수 PORT 또는 기본값 4000 포트에서 리스닝
- */
-app.listen(PORT, () => {
-  console.log(`🚀 Server listening on port ${PORT}`);
-  console.log(`📚 API 문서: http://localhost:${PORT}/api-docs`);
-  console.log(`❤️ 헬스체크: http://localhost:${PORT}/ping`);
-}); 
+export default app; 

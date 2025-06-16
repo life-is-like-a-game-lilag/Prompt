@@ -32,14 +32,56 @@
  * - GET /recommend/ai-models  : 전체 AI 모델 목록
  * 
  * @author 프롬프트 작성기 팀
- * @version 3.0 (T-004 완료)
+ * @version 3.1 (경로 및 에러 처리 개선)
  * @since 2025-06-16
  */
 
-import { Router } from 'express';
-import { pool } from './db';
+import express from 'express';
+import { logger } from '../utils/logger';
+import { pool } from '../db';
 
-const router = Router();
+const router = express.Router();
+
+// 요청 검증 미들웨어
+const validateRecommendRequest = (req: any, res: any, next: any) => {
+  const { keywords } = req.body;
+  
+  if (keywords && (!Array.isArray(keywords) || keywords.length > 3)) {
+    return res.status(400).json({
+      success: false,
+      error: '키워드는 최대 3개까지 배열 형태로 전달해주세요.'
+    });
+  }
+  
+  next();
+};
+
+// API 응답 표준화 헬퍼
+const createSuccessResponse = (data: any, message?: string) => ({
+  success: true,
+  data,
+  message: message || 'Success',
+  timestamp: new Date().toISOString()
+});
+
+const createErrorResponse = (error: string, details?: any) => ({
+  success: false,
+  error,
+  details,
+  timestamp: new Date().toISOString()
+});
+
+router.get('/', (req, res) => {
+  logger.info('추천 API 기본 요청');
+  res.json(createSuccessResponse({
+    version: '3.1',
+    endpoints: [
+      'POST /recommend/ai-models - AI 모델 추천',
+      'POST /recommend/questions - 대화형 질문 생성',
+      'GET /recommend/ai-models - 전체 AI 모델 목록'
+    ]
+  }, '추천 API 서비스가 정상 작동 중입니다.'));
+});
 
 /**
  * 🔮 AI 모델 스마트 추천 API
@@ -77,19 +119,19 @@ const router = Router();
  *   }
  * }
  */
-router.post('/ai-models', async (req: any, res: any) => {
+router.post('/ai-models', validateRecommendRequest, async (req: any, res: any) => {
   const { requirements, keywords } = req.body;
   
   try {
-    console.log('추천 요청 받음:', { keywords, requirements });
+    logger.info('AI 모델 추천 요청', { 
+      context: { keywords, requirements: requirements?.substring(0, 100) } 
+    });
     
     // 개선된 키워드 매칭 로직
     let matchedRule = null;
     
     // 키워드가 있는 경우 매칭 시도
     if (keywords && keywords.length > 0) {
-      console.log('받은 키워드들:', keywords);
-      
       // 목적별 추천
       const purpose = keywords[0]; // 첫 번째 답변 (목적)
       const complexity = keywords[1]; // 두 번째 답변 (복잡도)
@@ -97,35 +139,35 @@ router.post('/ai-models', async (req: any, res: any) => {
       
       if (purpose === 'writing') {
         if (complexity === 'complex' || priority === 'performance') {
-          matchedRule = { purpose_category: '고급 텍스트 생성', confidence_score: 90, recommended_models: [1, 3] }; // GPT-4, Claude 3
+          matchedRule = { purpose_category: '고급 텍스트 생성', confidence_score: 90, recommended_models: [1, 3] };
         } else {
-          matchedRule = { purpose_category: '일반 텍스트 생성', confidence_score: 85, recommended_models: [2] }; // GPT-3.5
+          matchedRule = { purpose_category: '일반 텍스트 생성', confidence_score: 85, recommended_models: [2] };
         }
       } else if (purpose === 'coding') {
         if (complexity === 'complex' || priority === 'performance') {
-          matchedRule = { purpose_category: '고급 코딩 지원', confidence_score: 95, recommended_models: [1, 4] }; // GPT-4, Gemini Pro
+          matchedRule = { purpose_category: '고급 코딩 지원', confidence_score: 95, recommended_models: [1, 4] };
         } else {
-          matchedRule = { purpose_category: '일반 코딩 지원', confidence_score: 80, recommended_models: [2, 1] }; // GPT-3.5, GPT-4
+          matchedRule = { purpose_category: '일반 코딩 지원', confidence_score: 80, recommended_models: [2, 1] };
         }
       } else if (purpose === 'analysis') {
         if (complexity === 'complex') {
-          matchedRule = { purpose_category: '고급 데이터 분석', confidence_score: 90, recommended_models: [1, 3, 4] }; // GPT-4, Claude 3, Gemini
+          matchedRule = { purpose_category: '고급 데이터 분석', confidence_score: 90, recommended_models: [1, 3, 4] };
         } else {
-          matchedRule = { purpose_category: '기본 데이터 분석', confidence_score: 75, recommended_models: [2, 4] }; // GPT-3.5, Gemini
+          matchedRule = { purpose_category: '기본 데이터 분석', confidence_score: 75, recommended_models: [2, 4] };
         }
       } else if (purpose === 'translation') {
-        matchedRule = { purpose_category: '번역', confidence_score: 85, recommended_models: [1, 3, 4] }; // GPT-4, Claude 3, Gemini
+        matchedRule = { purpose_category: '번역', confidence_score: 85, recommended_models: [1, 3, 4] };
       } else if (purpose === 'visual') {
         if (priority === 'cost') {
-          matchedRule = { purpose_category: '경제적 이미지 생성', confidence_score: 90, recommended_models: [7] }; // Stable Diffusion
+          matchedRule = { purpose_category: '경제적 이미지 생성', confidence_score: 90, recommended_models: [7] };
         } else {
-          matchedRule = { purpose_category: '고품질 이미지 생성', confidence_score: 95, recommended_models: [5, 6] }; // DALL-E 3, Midjourney
+          matchedRule = { purpose_category: '고품질 이미지 생성', confidence_score: 95, recommended_models: [5, 6] };
         }
       } else if (purpose === 'general') {
         if (priority === 'cost') {
-          matchedRule = { purpose_category: '경제적 범용 AI', confidence_score: 75, recommended_models: [2] }; // GPT-3.5
+          matchedRule = { purpose_category: '경제적 범용 AI', confidence_score: 75, recommended_models: [2] };
         } else {
-          matchedRule = { purpose_category: '고성능 범용 AI', confidence_score: 85, recommended_models: [1, 3] }; // GPT-4, Claude 3
+          matchedRule = { purpose_category: '고성능 범용 AI', confidence_score: 85, recommended_models: [1, 3] };
         }
       }
     }
@@ -145,14 +187,12 @@ router.post('/ai-models', async (req: any, res: any) => {
       `;
       const fallbackResult = await pool.query(fallbackQuery);
       
-      return res.json({
-        success: true,
-        data: {
-          recommendations: fallbackResult.rows,
-          match_reason: '범용 추천',
-          confidence: 60
-        }
-      });
+      return res.json(createSuccessResponse({
+        recommendations: fallbackResult.rows,
+        match_reason: '범용 추천',
+        confidence: 60,
+        matched_keywords: keywords || []
+      }, '범용 AI 모델을 추천했습니다.'));
     }
     
     // 추천된 모델들 상세 정보 조회 (제공업체 정보 포함)
@@ -169,19 +209,28 @@ router.post('/ai-models', async (req: any, res: any) => {
     `;
     const modelsResult = await pool.query(modelsQuery, [matchedRule.recommended_models]);
     
-    res.json({
-      success: true,
-      data: {
-        recommendations: modelsResult.rows,
-        match_reason: matchedRule.purpose_category,
+    logger.info('AI 모델 추천 성공', { 
+      context: { 
+        count: modelsResult.rows.length,
         confidence: matchedRule.confidence_score,
-        matched_keywords: keywords
-      }
+        category: matchedRule.purpose_category
+      } 
     });
     
+    res.json(createSuccessResponse({
+      recommendations: modelsResult.rows,
+      match_reason: matchedRule.purpose_category,
+      confidence: matchedRule.confidence_score,
+      matched_keywords: keywords
+    }, `${matchedRule.purpose_category} 용도로 ${modelsResult.rows.length}개 모델을 추천했습니다.`));
+    
   } catch (err) {
+    logger.error('AI 모델 추천 실패', err as Error);
     console.error('추천 API 에러:', err);
-    res.status(500).json({ success: false, error: String(err), details: err });
+    res.status(500).json(createErrorResponse(
+      '서버 내부 오류가 발생했습니다.',
+      process.env.NODE_ENV === 'development' ? String(err) : undefined
+    ));
   }
 });
 
@@ -220,6 +269,8 @@ router.post('/questions', async (req: any, res: any) => {
   const { initial_input, step = 1 } = req.body;
   
   try {
+    logger.info('대화형 질문 요청', { context: { step, initial_input } });
+    
     const questions = [
       {
         step: 1,
@@ -253,27 +304,28 @@ router.post('/questions', async (req: any, res: any) => {
       }
     ];
     
+    if (step < 1 || step > questions.length) {
+      return res.status(400).json(createErrorResponse(
+        `유효하지 않은 단계입니다. 1-${questions.length} 사이의 값을 입력해주세요.`
+      ));
+    }
+    
     if (step <= questions.length) {
-      res.json({
-        success: true,
-        data: {
-          current_question: questions[step - 1],
-          total_steps: questions.length,
-          progress: (step / questions.length) * 100
-        }
-      });
+      res.json(createSuccessResponse({
+        current_question: questions[step - 1],
+        total_steps: questions.length,
+        progress: (step / questions.length) * 100
+      }, `${step}단계 질문을 생성했습니다.`));
     } else {
-      res.json({
-        success: true,
-        data: {
-          completed: true,
-          message: "질문이 완료되었습니다. AI 추천을 진행합니다."
-        }
-      });
+      res.json(createSuccessResponse({
+        completed: true,
+        message: "질문이 완료되었습니다. AI 추천을 진행합니다."
+      }, '모든 질문이 완료되었습니다.'));
     }
     
   } catch (err) {
-    res.status(500).json({ success: false, error: String(err) });
+    logger.error('대화형 질문 생성 실패', err as Error);
+    res.status(500).json(createErrorResponse('질문 생성 중 오류가 발생했습니다.'));
   }
 });
 
@@ -297,6 +349,8 @@ router.post('/questions', async (req: any, res: any) => {
  */
 router.get('/ai-models', async (_req: any, res: any) => {
   try {
+    logger.info('전체 AI 모델 목록 요청');
+    
     const result = await pool.query(`
       SELECT 
         m.*,
@@ -314,13 +368,16 @@ router.get('/ai-models', async (_req: any, res: any) => {
         m.name
     `);
     
-    res.json({
-      success: true,
-      data: result.rows
-    });
+    logger.info('AI 모델 목록 조회 성공', { context: { count: result.rows.length } });
+    
+    res.json(createSuccessResponse(
+      result.rows,
+      `총 ${result.rows.length}개의 AI 모델을 조회했습니다.`
+    ));
     
   } catch (err) {
-    res.status(500).json({ success: false, error: String(err) });
+    logger.error('AI 모델 목록 조회 실패', err as Error);
+    res.status(500).json(createErrorResponse('AI 모델 목록을 불러오는 중 오류가 발생했습니다.'));
   }
 });
 
@@ -436,6 +493,12 @@ router.get('/ai-models/:id', async (req: any, res: any) => {
   const { id } = req.params;
   
   try {
+    if (!id || isNaN(Number(id))) {
+      return res.status(400).json(createErrorResponse('유효한 모델 ID를 입력해주세요.'));
+    }
+    
+    logger.info('AI 모델 상세 정보 요청', { context: { modelId: id } });
+    
     const result = await pool.query(`
       SELECT 
         m.*,
@@ -449,19 +512,22 @@ router.get('/ai-models/:id', async (req: any, res: any) => {
     `, [id]);
     
     if (result.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        error: 'AI 모델을 찾을 수 없습니다.'
-      });
+      return res.status(404).json(createErrorResponse(
+        'AI 모델을 찾을 수 없습니다.',
+        { modelId: id }
+      ));
     }
     
-    res.json({
-      success: true,
-      data: result.rows[0]
-    });
+    logger.info('AI 모델 상세 정보 조회 성공', { context: { modelId: id, modelName: result.rows[0].name } });
+    
+    res.json(createSuccessResponse(
+      result.rows[0],
+      `${result.rows[0].name} 모델 정보를 조회했습니다.`
+    ));
     
   } catch (err) {
-    res.status(500).json({ success: false, error: String(err) });
+    logger.error('AI 모델 상세 정보 조회 실패', err as Error);
+    res.status(500).json(createErrorResponse('모델 정보를 불러오는 중 오류가 발생했습니다.'));
   }
 });
 

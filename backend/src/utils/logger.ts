@@ -47,7 +47,7 @@ export enum LogLevel {
  * 로그 메타데이터 인터페이스
  * @description 각 로그 엔트리에 포함될 메타데이터 구조
  */
-interface LogMetadata {
+export interface LogMetadata {
   /** 요청 ID (AI API 호출 추적용) */
   requestId?: string;
   /** 사용자 ID */

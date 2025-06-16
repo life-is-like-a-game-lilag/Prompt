@@ -122,6 +122,9 @@ const options = {
 
 const specs = swaggerJSDoc(options);
 
+// swaggerSpec을 export하여 다른 파일에서 사용할 수 있도록 함
+export const swaggerSpec = specs;
+
 export function setupSwagger(app: Express): void {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
     customCss: '.swagger-ui .topbar { display: none }',

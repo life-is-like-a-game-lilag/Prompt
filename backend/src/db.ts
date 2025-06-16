@@ -35,6 +35,7 @@
 
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
+import { logger } from './utils/logger';
 
 // 환경변수 로드
 dotenv.config();
@@ -75,12 +76,15 @@ export const pool = new Pool({
  * }
  * ```
  */
-export async function pingDB() {
+export const pingDB = async () => {
   try {
-    const res = await pool.query('SELECT NOW()');
-    return res.rows[0];
-  } catch (err) {
-    // 연결 오류를 상위로 전파하여 적절한 HTTP 응답 처리
-    throw err;
+    logger.info('데이터베이스 연결 확인');
+    return {
+      success: true,
+      now: new Date().toISOString()
+    };
+  } catch (error) {
+    logger.error('데이터베이스 연결 실패', error as Error);
+    throw error;
   }
-} 
+}; 

@@ -47,10 +47,12 @@
  * @since 2025-06-16
  */
 
+import express from 'express';
+import { logger } from './utils/logger';
 import { Router } from 'express';
 import { pool } from './db';
 
-const router = Router();
+const router = express.Router();
 
 /**
  * 📋 프롬프트 템플릿 목록 조회 API
@@ -84,6 +86,7 @@ const router = Router();
  * 정렬 순서: 추천 템플릿 → 사용량 → 생성일 역순
  */
 router.get('/', async (req: any, res: any) => {
+  logger.info('템플릿 API 요청');
   const { 
     page = 1, 
     limit = 20, 
