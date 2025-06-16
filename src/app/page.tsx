@@ -180,6 +180,138 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* 프롬프트 등록 섹션 */}
+        <section className="mb-12 lg:mb-16" aria-labelledby="prompt-registration-section" id="prompt-registration">
+          <div className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl lg:rounded-3xl p-6 lg:p-8 shadow-xl border border-green-200 dark:border-gray-700">
+            <div className="mb-6 lg:mb-8">
+              <div className="flex items-center justify-center w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mb-4 shadow-lg mx-auto" aria-hidden="true">
+                <span className="text-3xl lg:text-4xl" role="img" aria-label="연필 이모지">✏️</span>
+              </div>
+              <h2 id="prompt-registration-section" className="text-2xl lg:text-3xl font-bold theme-text-primary mb-3 lg:mb-4 text-center">
+                프롬프트 등록
+              </h2>
+              <p className="theme-text-secondary text-center max-w-2xl mx-auto text-sm lg:text-base">
+                새로운 프롬프트를 작성하고 저장하여 언제든지 재사용하세요
+              </p>
+            </div>
+            
+            {/* 등록 폼 */}
+            <form className="space-y-6 lg:space-y-8 max-w-4xl mx-auto" aria-label="프롬프트 등록 폼">
+              {/* 제목과 역할 */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+                <div>
+                  <label htmlFor="prompt-title" className="block text-sm lg:text-base font-semibold theme-text-primary mb-2">
+                    제목 <span className="text-red-500" aria-label="필수 입력">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="prompt-title"
+                    placeholder="프롬프트 제목을 입력하세요"
+                    className="w-full px-4 py-3 lg:py-4 border border-gray-300 dark:border-gray-600 rounded-xl lg:rounded-2xl theme-input focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm lg:text-base"
+                    required
+                    aria-describedby="prompt-title-hint"
+                  />
+                  <p id="prompt-title-hint" className="text-xs lg:text-sm theme-text-secondary mt-1">
+                    명확하고 구체적인 제목을 작성해주세요
+                  </p>
+                </div>
+                
+                <div>
+                  <label htmlFor="prompt-role" className="block text-sm lg:text-base font-semibold theme-text-primary mb-2">
+                    AI 역할 <span className="text-red-500" aria-label="필수 입력">*</span>
+                  </label>
+                  <select
+                    id="prompt-role"
+                    className="w-full px-4 py-3 lg:py-4 border border-gray-300 dark:border-gray-600 rounded-xl lg:rounded-2xl theme-input focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm lg:text-base"
+                    required
+                    aria-describedby="prompt-role-hint"
+                  >
+                    <option value="">역할을 선택하세요</option>
+                    <option value="assistant">AI 어시스턴트</option>
+                    <option value="creative">창작 도우미</option>
+                    <option value="technical">기술 전문가</option>
+                    <option value="educational">교육 도우미</option>
+                    <option value="analyst">분석 전문가</option>
+                    <option value="writer">작가</option>
+                    <option value="translator">번역가</option>
+                  </select>
+                  <p id="prompt-role-hint" className="text-xs lg:text-sm theme-text-secondary mt-1">
+                    AI가 수행할 역할을 선택해주세요
+                  </p>
+                </div>
+              </div>
+              
+              {/* 설명 */}
+              <div>
+                <label htmlFor="prompt-description" className="block text-sm lg:text-base font-semibold theme-text-primary mb-2">
+                  설명
+                </label>
+                <textarea
+                  id="prompt-description"
+                  rows={3}
+                  placeholder="프롬프트에 대한 간단한 설명을 입력하세요"
+                  className="w-full px-4 py-3 lg:py-4 border border-gray-300 dark:border-gray-600 rounded-xl lg:rounded-2xl theme-input focus:ring-2 focus:ring-green-500 focus:border-transparent resize-vertical text-sm lg:text-base"
+                  aria-describedby="prompt-description-hint"
+                />
+                <p id="prompt-description-hint" className="text-xs lg:text-sm theme-text-secondary mt-1">
+                  이 프롬프트의 용도와 특징을 설명해주세요
+                </p>
+              </div>
+              
+              {/* 프롬프트 내용 */}
+              <div>
+                <label htmlFor="prompt-content" className="block text-sm lg:text-base font-semibold theme-text-primary mb-2">
+                  프롬프트 내용 <span className="text-red-500" aria-label="필수 입력">*</span>
+                </label>
+                <textarea
+                  id="prompt-content"
+                  rows={8}
+                  placeholder="AI에게 전달할 프롬프트를 작성하세요..."
+                  className="w-full px-4 py-3 lg:py-4 border border-gray-300 dark:border-gray-600 rounded-xl lg:rounded-2xl theme-input focus:ring-2 focus:ring-green-500 focus:border-transparent resize-vertical text-sm lg:text-base font-mono"
+                  required
+                  aria-describedby="prompt-content-hint"
+                />
+                <p id="prompt-content-hint" className="text-xs lg:text-sm theme-text-secondary mt-1">
+                  구체적이고 명확한 지시사항을 포함해주세요
+                </p>
+              </div>
+              
+              {/* 태그 */}
+              <div>
+                <label htmlFor="prompt-tags" className="block text-sm lg:text-base font-semibold theme-text-primary mb-2">
+                  태그
+                </label>
+                <input
+                  type="text"
+                  id="prompt-tags"
+                  placeholder="태그를 쉼표로 구분하여 입력하세요 (예: 글쓰기, 창작, 소설)"
+                  className="w-full px-4 py-3 lg:py-4 border border-gray-300 dark:border-gray-600 rounded-xl lg:rounded-2xl theme-input focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm lg:text-base"
+                  aria-describedby="prompt-tags-hint"
+                />
+                <p id="prompt-tags-hint" className="text-xs lg:text-sm theme-text-secondary mt-1">
+                  검색 시 활용할 키워드를 추가해주세요
+                </p>
+              </div>
+              
+              {/* 등록 버튼 */}
+              <div className="text-center pt-4 lg:pt-6">
+                <button
+                  type="submit"
+                  className="inline-flex items-center justify-center gap-3 lg:gap-4 bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 text-white px-8 py-4 lg:px-12 lg:py-5 rounded-2xl lg:rounded-3xl font-bold text-lg lg:text-xl hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl min-w-[280px] lg:min-w-[320px] focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-opacity-75"
+                  aria-label="프롬프트 등록하기"
+                >
+                  <span className="text-2xl lg:text-3xl" role="img" aria-label="저장 이모지">💾</span>
+                  <span>프롬프트 등록</span>
+                </button>
+                
+                <p className="text-xs lg:text-sm theme-text-secondary mt-4">
+                  등록된 프롬프트는 언제든지 수정하거나 삭제할 수 있습니다
+                </p>
+              </div>
+            </form>
+          </div>
+        </section>
       </main>
     </div>
   );
