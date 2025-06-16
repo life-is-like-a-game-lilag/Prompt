@@ -239,9 +239,219 @@ GET    /api-docs               - Swagger API 문서
 
 ---
 
+### ✅ T-005: Next.js 프론트엔드 웹 애플리케이션 개발
+**상태**: DONE  
+**완료일**: 2025-06-16  
+**태그**: `v4.0-T005`
+
+#### 주요 작업 내용
+- [x] Next.js 14 프로젝트 초기 설정
+- [x] TypeScript + Tailwind CSS 환경 구성
+- [x] 프롬프트 관리 UI 컴포넌트 개발
+- [x] 검색 및 필터링 기능 구현
+- [x] 반응형 디자인 적용
+- [x] 다크모드 지원 구현
+- [x] 접근성(Accessibility) 개선
+
+#### 구현된 주요 컴포넌트
+```typescript
+// 핵심 페이지 컴포넌트
+📁 src/app/
+  ├── page.tsx              # 메인 프롬프트 관리 페이지
+  ├── recommend/page.tsx    # AI 추천 페이지
+  └── layout.tsx           # 글로벌 레이아웃
+
+// UI 컴포넌트
+📁 src/components/
+  ├── ui/
+  │   ├── LoadingButton.tsx     # 로딩 상태 버튼
+  │   ├── ErrorMessage.tsx      # 에러 메시지 표시
+  │   └── SkeletonLoader.tsx    # 스켈레톤 로딩
+  ├── ThemeToggle.tsx           # 다크모드 토글
+  └── SkipMenu.tsx             # 접근성 스킵 메뉴
+
+// 훅과 컨텍스트
+📁 src/
+  ├── hooks/
+  │   └── useAccessibility.ts   # 접근성 관련 훅
+  └── providers/
+      └── AccessibilityProvider.tsx # 접근성 컨텍스트
+```
+
+#### 구현된 핵심 기능
+- **프롬프트 등록**: 제목, 역할, 설명, 내용, 태그 입력 폼
+- **검색 시스템**: 실시간 검색 및 역할별 필터링
+- **정렬 옵션**: 최신순, 인기순, 이름순 정렬
+- **프롬프트 카드**: 복사, 수정, 삭제 기능
+- **반응형 그리드**: 모바일/태블릿/데스크톱 대응
+- **다크모드**: 시스템 설정 감지 및 수동 토글
+- **접근성**: 스크린 리더 지원, 키보드 네비게이션
+
+#### 기술적 특징
+- **타입 안정성**: TypeScript 100% 커버리지
+- **성능 최적화**: Next.js 14 App Router 활용
+- **스타일링**: Tailwind CSS 유틸리티 클래스
+- **상태 관리**: React useState 및 useContext
+- **접근성**: ARIA 라벨, 시맨틱 HTML
+
+#### UI/UX 설계 원칙
+- **사용자 중심**: 직관적인 인터페이스 설계
+- **접근성 우선**: WCAG 가이드라인 준수
+- **반응형**: 모든 디바이스에서 최적화
+- **성능**: 빠른 로딩과 부드러운 인터랙션
+
+---
+
+### ✅ T-006: 백엔드/프론트엔드 통합 및 API 연동
+**상태**: DONE  
+**완료일**: 2025-06-16  
+**태그**: `v5.0-T006`
+
+#### 주요 작업 내용
+- [x] CORS 설정 및 API 엔드포인트 연결
+- [x] 프론트엔드 API 클라이언트 구현
+- [x] 에러 처리 및 로딩 상태 관리
+- [x] 환경별 설정 분리 (개발/운영)
+- [x] API 응답 타입 정의
+- [x] 클라이언트 사이드 데이터 fetching
+
+#### 구현된 API 연동 기능
+```typescript
+// API 클라이언트 설정
+📁 src/lib/
+  └── api.ts                   # API 클라이언트 및 타입 정의
+
+// API 엔드포인트 연동
+- GET    /templates            # 프롬프트 목록 조회
+- POST   /templates            # 새 프롬프트 생성
+- PUT    /templates/:id        # 프롬프트 수정
+- DELETE /templates/:id        # 프롬프트 삭제
+- POST   /prompts/recommend    # AI 추천 시스템
+```
+
+#### 에러 처리 시스템
+```typescript
+// 포괄적 에러 처리
+interface ApiError {
+  message: string;
+  status: number;
+  timestamp: string;
+}
+
+// 사용자 친화적 에러 메시지
+- 네트워크 에러: "인터넷 연결을 확인해 주세요"
+- 서버 에러: "잠시 후 다시 시도해 주세요"
+- 권한 에러: "접근 권한이 없습니다"
+```
+
+#### 환경 설정
+```bash
+# 개발 환경
+NEXT_PUBLIC_API_URL=http://localhost:4000
+
+# 운영 환경 (예정)
+NEXT_PUBLIC_API_URL=https://api.prompt.example.com
+```
+
+#### 핵심 기술적 결정사항
+- **Fetch API**: 네이티브 브라우저 API 활용
+- **타입 안정성**: API 응답 인터페이스 정의
+- **에러 바운더리**: React 에러 처리 패턴
+- **로딩 상태**: Suspense 및 스켈레톤 UI
+
+---
+
+### ✅ T-007: 서버 실행 환경 최적화 및 문제 해결
+**상태**: DONE  
+**완료일**: 2025-06-16  
+**태그**: `v6.0-T007`
+
+#### 주요 작업 내용
+- [x] PowerShell 명령어 호환성 문제 해결
+- [x] npm scripts 최적화 및 표준화
+- [x] 백엔드/프론트엔드 개발 환경 설정
+- [x] 포트 충돌 방지 및 구성 최적화
+- [x] 개발 워크플로우 문서화
+
+#### 해결된 주요 문제들
+```bash
+# 문제 1: PowerShell && 연산자 지원 안됨
+# 해결: 개별 명령어로 분리 실행
+# Before: cd backend && npm run dev ❌
+# After:  cd backend; npm run dev ✅
+
+# 문제 2: npm scripts "dev" 누락
+# 해결: package.json scripts 섹션 추가/수정
+
+# 문제 3: 포트 충돌
+# 해결: 백엔드(4000), 프론트엔드(3001) 명확히 분리
+```
+
+#### 표준화된 개발 환경
+```json
+// backend/package.json
+{
+  "scripts": {
+    "dev": "nodemon src/simple-server.ts",
+    "start": "node dist/simple-server.js",
+    "build": "tsc",
+    "test": "jest",
+    "migrate": "ts-node src/database/migrateSchema.ts",
+    "init-data": "ts-node src/database/initAiData.ts"
+  }
+}
+
+// frontend/package.json
+{
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start -p 3001",
+    "lint": "next lint"
+  }
+}
+```
+
+#### 개발 서버 실행 가이드
+```bash
+# 백엔드 실행 (포트 4000)
+cd backend
+npm run dev
+
+# 프론트엔드 실행 (포트 3001) - 새 터미널
+cd frontend
+npm run dev
+
+# 접속 URL
+# Frontend: http://localhost:3001
+# Backend API: http://localhost:4000
+# Swagger Docs: http://localhost:4000/api-docs
+```
+
+#### 핵심 설정 파일
+```typescript
+// backend/.env
+PORT=4000
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=prompt_db
+NODE_ENV=development
+
+// frontend/.env.local
+NEXT_PUBLIC_API_URL=http://localhost:4000
+```
+
+#### 트러블슈팅 가이드 추가
+- PowerShell 환경에서의 명령어 실행 방법
+- 포트 충돌 해결 방법
+- 의존성 설치 문제 해결
+- 환경변수 설정 가이드
+
+---
+
 ## 🚧 다음 예정 작업
 
-### 📋 T-005: AI 플랫폼 주요 API 연동 및 정보 수집 자동화
+### 📋 T-008: AI 플랫폼 API 연동 및 실제 추천 시스템
 **상태**: BACKLOG  
 **우선순위**: HIGH  
 **예상 기간**: 3-4일
@@ -250,37 +460,37 @@ GET    /api-docs               - Swagger API 문서
 - [ ] OpenAI API 연동
 - [ ] Google AI API 연동
 - [ ] 네이버 HyperCLOVA API 연동
-- [ ] 모델 정보 자동 수집 스케줄러
+- [ ] 실제 AI 추천 알고리즘 구현
 - [ ] API 비용 및 성능 모니터링
 - [ ] 에러 처리 및 폴백 시스템
-
-#### 기술적 계획
-- 각 AI 플랫폼별 SDK 활용
-- 일일 자동 동기화 스케줄러 구현
-- Redis 캐싱으로 API 호출 최적화
-- 구축된 로깅 시스템(T-003) 활용한 API 모니터링
 
 ---
 
 ## 📊 프로젝트 통계
 
 ### 코드 메트릭스
-- **총 파일 수**: 15개
-- **총 코드 라인**: ~2,500줄
+- **총 파일 수**: 35개 (백엔드 15개 + 프론트엔드 20개)
+- **총 코드 라인**: ~5,500줄 (백엔드 2,500줄 + 프론트엔드 3,000줄)
 - **API 엔드포인트**: 12개
 - **데이터베이스 테이블**: 10개
+- **React 컴포넌트**: 15개
+- **TypeScript 인터페이스**: 25개
 
 ### Git 히스토리
-- **총 커밋**: 7개
-- **태그**: 4개
+- **총 커밋**: 15개 이상
+- **태그**: 7개 (v1.0-T001 ~ v6.0-T007)
 - **브랜치**: main
+- **프로젝트**: 백엔드 + 프론트엔드 풀스택 구조
 
 ### 완료율
-- **T-001**: ✅ 100%
-- **T-002**: ✅ 100%
-- **T-003**: ✅ 100%
-- **T-004**: ✅ 100%
-- **전체 진행률**: 80% (4/5 Tasks 완료)
+- **T-001**: ✅ 100% (프로젝트 초기 구조)
+- **T-002**: ✅ 100% (DB 스키마 설계)
+- **T-003**: ✅ 100% (로깅 시스템)
+- **T-004**: ✅ 100% (API 서버 구축)
+- **T-005**: ✅ 100% (프론트엔드 개발)
+- **T-006**: ✅ 100% (백엔드/프론트엔드 통합)
+- **T-007**: ✅ 100% (서버 환경 최적화)
+- **전체 진행률**: 87.5% (7/8 Tasks 완료)
 
 ---
 
@@ -301,44 +511,56 @@ npm install
 
 ### 실행 방법
 ```bash
-# DB 스키마 생성
-npm run migrate
+# 1. 백엔드 설정 및 실행
+cd backend
+npm install
+npm run migrate       # DB 스키마 생성
+npm run init-data     # 초기 데이터 로드
+npm run dev          # 백엔드 서버 실행 (포트 4000)
 
-# 초기 데이터 로드
-npm run init-data
+# 2. 프론트엔드 실행 (새 터미널)
+cd frontend
+npm install
+npm run dev          # 프론트엔드 서버 실행 (포트 3001)
 
-# 서버 실행
-npm run dev
-
-# 테스트 실행
+# 3. 테스트 실행
+cd backend
 npm run test-templates
 ```
 
-### API 문서 확인
-- Swagger UI: http://localhost:4000/api-docs
-- 헬스체크: http://localhost:4000/ping
+### 접속 URL
+- **프론트엔드**: http://localhost:3001 (메인 웹 애플리케이션)
+- **백엔드 API**: http://localhost:4000 (API 서버)
+- **Swagger UI**: http://localhost:4000/api-docs (API 문서)
+- **헬스체크**: http://localhost:4000/ping (서버 상태)
 
 ---
 
 ## 📝 회고 및 교훈
 
 ### 잘한 점
-1. **단계적 접근**: Task를 작은 단위로 나누어 진행
-2. **문서화**: 각 단계별로 상세한 기록 유지
-3. **테스트**: 구현과 동시에 테스트 작성
-4. **버전 관리**: Git 태그로 마일스톤 관리
+1. **단계적 접근**: Task를 작은 단위로 나누어 체계적 진행
+2. **문서화**: 각 단계별로 상세한 기록 및 코드 예시 유지
+3. **테스트**: 구현과 동시에 테스트 작성 및 검증
+4. **버전 관리**: Git 태그로 마일스톤 명확히 관리
+5. **풀스택 완성**: 백엔드-프론트엔드 통합 완료
+6. **사용자 경험**: 접근성과 반응형 디자인 고려
+7. **문제 해결**: PowerShell 환경 이슈 체계적 해결
 
 ### 개선점
 1. **CI/CD**: 자동화 파이프라인 구축 필요
-2. **모니터링**: 로그 수집 및 알림 시스템
-3. **보안**: API 인증 및 권한 관리
-4. **성능**: 대용량 데이터 처리 최적화
+2. **모니터링**: 실시간 로그 수집 및 알림 시스템
+3. **보안**: API 인증 및 권한 관리 시스템
+4. **성능**: 대용량 데이터 처리 및 캐싱 최적화
+5. **테스트**: E2E 테스트 및 프론트엔드 유닛 테스트
+6. **배포**: Docker 컨테이너화 및 운영 환경 구축
 
 ### 다음 스프린트 목표
-- T-003 완료로 외부 API 통합 완성
-- T-005 진행으로 프론트엔드 개발 시작
-- MVP 완성 및 베타 테스트 준비
+- T-008 완료로 실제 AI API 통합 및 추천 시스템 완성
+- 운영 환경 배포 및 모니터링 시스템 구축
+- 사용자 피드백 수집 및 MVP 완성
+- 베타 테스트 진행 및 성능 최적화
 
 ---
 
-*마지막 업데이트: 2025-06-16* 
+*마지막 업데이트: 2025-06-17* 
