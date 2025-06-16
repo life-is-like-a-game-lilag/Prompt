@@ -28,12 +28,12 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import promptsRouter from "./routes/prompts";
-import recommendRouter from "./routes/recommend";
+// import promptsRouter from "./routes/prompts";
+// import recommendRouter from "./routes/recommend";
 import templatesRouter from "./templates";
-import swaggerUi from "swagger-ui-express";
-import { swaggerSpec } from "./swagger";
-import { logger } from "./utils/logger";
+// import swaggerUi from "swagger-ui-express";
+// import { swaggerSpec } from "./swagger";
+// import { logger } from "./utils/logger";
 
 // 환경변수 로드
 dotenv.config();
@@ -46,7 +46,7 @@ const requiredEnvVars = ['DATABASE_URL', 'NODE_ENV'];
 const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
 
 if (missingEnvVars.length > 0) {
-  logger.error(`필수 환경변수가 누락되었습니다: ${missingEnvVars.join(', ')}`);
+  // logger.error(`필수 환경변수가 누락되었습니다: ${missingEnvVars.join(', ')}`);
   console.warn(`⚠️  누락된 환경변수: ${missingEnvVars.join(', ')}`);
   console.warn('⚠️  일부 기능이 제한될 수 있습니다.');
 }
@@ -69,7 +69,8 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// 요청 로깅 미들웨어
+// 요청 로깅 미들웨어 (임시 주석처리)
+/*
 app.use((req, res, next) => {
   logger.info(`${req.method} ${req.path}`, {
     context: {
@@ -81,6 +82,7 @@ app.use((req, res, next) => {
   });
   next();
 });
+*/
 
 // API 문서 (임시 주석처리)
 // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -119,7 +121,7 @@ app.get("/", (req, res) => {
 
 // 404 핸들러
 app.use("*", (req, res) => {
-  logger.warn(`404 - 존재하지 않는 경로: ${req.method} ${req.originalUrl}`);
+  // logger.warn(`404 - 존재하지 않는 경로: ${req.method} ${req.originalUrl}`);
   res.status(404).json({
     success: false,
     error: "요청하신 API 엔드포인트를 찾을 수 없습니다.",
@@ -131,7 +133,8 @@ app.use("*", (req, res) => {
 
 // 전역 에러 핸들러
 app.use((err: any, req: any, res: any, next: any) => {
-  logger.error('서버 오류', err);
+  // logger.error('서버 오류', err);
+  console.error('서버 오류', err);
   
   res.status(err.status || 500).json({
     success: false,
@@ -145,7 +148,7 @@ app.use((err: any, req: any, res: any, next: any) => {
 
 // 서버 시작
 app.listen(PORT, () => {
-  logger.info(`서버가 포트 ${PORT}에서 시작되었습니다.`);
+  // logger.info(`서버가 포트 ${PORT}에서 시작되었습니다.`);
   console.log(`🚀 프롬프트 작성기 API 서버 시작됨`);
   console.log(`📍 서버 주소: http://localhost:${PORT}`);
   console.log(`📚 API 문서: http://localhost:${PORT}/api-docs`);
@@ -158,13 +161,13 @@ app.listen(PORT, () => {
 
 // Graceful shutdown
 process.on('SIGINT', () => {
-  logger.info('서버 종료 시그널 받음 (SIGINT)');
+  // logger.info('서버 종료 시그널 받음 (SIGINT)');
   console.log('\n🛑 서버를 안전하게 종료합니다...');
   process.exit(0);
 });
 
 process.on('SIGTERM', () => {
-  logger.info('서버 종료 시그널 받음 (SIGTERM)');
+  // logger.info('서버 종료 시그널 받음 (SIGTERM)');
   console.log('\n🛑 서버를 안전하게 종료합니다...');
   process.exit(0);
 });
