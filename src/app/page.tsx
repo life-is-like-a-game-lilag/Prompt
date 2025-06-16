@@ -24,12 +24,39 @@ export default function Home() {
 
   return (
     <div className="min-h-screen dark-bg light-bg transition-all duration-500">
+      {/* 바로가기 메뉴 */}
+      <nav className="sr-only focus-within:not-sr-only focus-within:absolute focus-within:top-4 focus-within:left-4 focus-within:z-50 focus-within:bg-white focus-within:dark:bg-gray-800 focus-within:rounded-lg focus-within:shadow-xl focus-within:border focus-within:border-gray-200 focus-within:dark:border-gray-700 focus-within:p-4 focus-within:min-w-[200px]" aria-label="바로가기 메뉴">
+        <h2 className="text-sm font-semibold theme-text-primary mb-2">바로가기 메뉴</h2>
+        <ul className="space-y-1" role="list">
+          <li>
+            <a href="#main-content" className="block px-3 py-2 text-sm theme-text-primary hover:bg-blue-50 dark:hover:bg-blue-900 rounded-md focus:outline-none focus:bg-blue-100 dark:focus:bg-blue-900 transition-colors" role="menuitem">
+              AI 추천
+            </a>
+          </li>
+          <li>
+            <a href="#search" className="block px-3 py-2 text-sm theme-text-primary hover:bg-blue-50 dark:hover:bg-blue-900 rounded-md focus:outline-none focus:bg-blue-100 dark:focus:bg-blue-900 transition-colors" role="menuitem">
+              검색
+            </a>
+          </li>
+          <li>
+            <a href="#prompt-registration" className="block px-3 py-2 text-sm theme-text-primary hover:bg-blue-50 dark:hover:bg-blue-900 rounded-md focus:outline-none focus:bg-blue-100 dark:focus:bg-blue-900 transition-colors" role="menuitem">
+              프롬프트 등록
+            </a>
+          </li>
+          <li>
+            <a href="#prompt-list" className="block px-3 py-2 text-sm theme-text-primary hover:bg-blue-50 dark:hover:bg-blue-900 rounded-md focus:outline-none focus:bg-blue-100 dark:focus:bg-blue-900 transition-colors" role="menuitem">
+              등록된 프롬프트
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
       {/* 테마 토글 버튼 */}
       <aside className="fixed top-4 right-4 z-50" aria-label="테마 설정">
         <ThemeToggle />
       </aside>
       
-      <main className="container mx-auto px-4 py-6 max-w-6xl" role="main" aria-label="메인 콘텐츠">
+      <main className="container mx-auto px-4 py-6 max-w-6xl" role="main" aria-label="메인 콘텐츠" id="main-content">
         {/* Hero 섹션 */}
         <header className="text-center mb-12 animate-fade-in" role="banner">
           <div className="mb-6">
