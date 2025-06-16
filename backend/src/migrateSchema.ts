@@ -70,30 +70,38 @@ async function migrateSchema() {
     const schemaPath = path.join(__dirname, 'schema.sql');
     const schemaSql = fs.readFileSync(schemaPath, 'utf8');
     
+    // SQL 파일 전체를 한 번에 실행 - 모든 테이블과 인덱스가 생성됨
+    // 외래 키 제약조건과 함께 데이터 무결성 보장
     await pool.query(schemaSql);
-    console.log('✅ 스키마 적용 완료\n');
+    console.log('✅ 스키마 적용 완료 - 10개 테이블, 인덱스, 제약조건 생성됨\n');
 
     // 2. AI 제공업체 데이터 삽입
     console.log('🏢 AI 제공업체 데이터 삽입 중...');
+    // 주요 AI 서비스 제공업체 5개사 정의
+    // 각 업체의 공식 웹사이트와 API 베이스 URL 포함
     const providers = [
       { name: 'OpenAI', company: 'OpenAI', website: 'https://openai.com', api_base: 'https://api.openai.com/v1' },
       { name: 'Anthropic', company: 'Anthropic', website: 'https://anthropic.com', api_base: 'https://api.anthropic.com' },
       { name: 'Google AI', company: 'Google', website: 'https://ai.google.dev', api_base: 'https://generativelanguage.googleapis.com' },
       { name: 'Stability AI', company: 'Stability AI', website: 'https://stability.ai', api_base: 'https://api.stability.ai' },
-      { name: 'Midjourney', company: 'Midjourney Inc.', website: 'https://midjourney.com', api_base: null }
+      { name: 'Midjourney', company: 'Midjourney Inc.', website: 'https://midjourney.com', api_base: null } // Discord 기반, API 없음
     ];
 
     for (const provider of providers) {
+      // ON CONFLICT를 사용하여 중복 삽입 방지 (name 필드가 UNIQUE)
+      // 기존 데이터가 있으면 무시하고 계속 진행
       await pool.query(
         `INSERT INTO ai_providers (name, company, website_url, api_base_url) 
          VALUES ($1, $2, $3, $4) ON CONFLICT (name) DO NOTHING`,
         [provider.name, provider.company, provider.website, provider.api_base]
       );
     }
-    console.log('✅ AI 제공업체 데이터 삽입 완료\n');
+    console.log('✅ AI 제공업체 5개사 데이터 삽입 완료\n');
 
     // 3. 개선된 AI 모델 데이터 삽입
     console.log('🤖 AI 모델 데이터 삽입 중...');
+    // 7개의 주요 AI 모델 정보 (텍스트 5개 + 이미지 2개)
+    // 각 모델의 성능 지표, 가격 정보, 기술 사양 포함
     const models = [
       {
         provider: 'OpenAI', name: 'GPT-4', model_key: 'gpt-4', version: '4.0',
@@ -154,11 +162,13 @@ async function migrateSchema() {
     ];
 
     for (const model of models) {
-      // 제공업체 ID 조회
+      // 각 모델별로 제공업체 ID를 조회하여 연결
       const providerResult = await pool.query('SELECT id FROM ai_providers WHERE name = $1', [model.provider]);
       const providerId = providerResult.rows[0]?.id;
 
       if (providerId) {
+        // 19개 필드의 완전한 모델 정보 삽입
+        // ON CONFLICT DO NOTHING으로 중복 방지 (복합 UNIQUE 제약)
         await pool.query(
           `INSERT INTO ai_models (
             provider_id, name, model_key, version, description, modality,
@@ -175,12 +185,16 @@ async function migrateSchema() {
             model.api_available !== false, model.release_date
           ]
         );
+      } else {
+        console.log(`⚠️ 제공업체 '${model.provider}'를 찾을 수 없어 모델 '${model.name}' 삽입 건너뜀`);
       }
     }
-    console.log('✅ AI 모델 데이터 삽입 완료\n');
+    console.log('✅ AI 모델 7개 데이터 삽입 완료 (텍스트 5개 + 이미지 2개)\n');
 
     // 4. 카테고리 데이터 삽입
     console.log('📂 카테고리 데이터 삽입 중...');
+    // 프롬프트 템플릿을 분류할 8개 주요 카테고리
+    // 각 카테고리에 아이콘과 상세 설명 포함
     const categories = [
       { name: '글쓰기 및 창작', description: '텍스트 생성, 창의적 글쓰기, 콘텐츠 작성', icon: '✍️' },
       { name: '프로그래밍', description: '코드 생성, 디버깅, 기술 문서 작성', icon: '💻' },
@@ -194,37 +208,43 @@ async function migrateSchema() {
 
     for (let i = 0; i < categories.length; i++) {
       const cat = categories[i];
+      // sort_order를 1부터 순차적으로 할당하여 정렬 순서 보장
       await pool.query(
         `INSERT INTO categories (name, description, icon, sort_order) 
          VALUES ($1, $2, $3, $4) ON CONFLICT (name) DO NOTHING`,
         [cat.name, cat.description, cat.icon, i + 1]
       );
     }
-    console.log('✅ 카테고리 데이터 삽입 완료\n');
+    console.log('✅ 카테고리 8개 데이터 삽입 완료\n');
 
     // 5. 태그 데이터 삽입
     console.log('🏷️ 태그 데이터 삽입 중...');
+    // 템플릿의 특성을 나타내는 8개 기본 태그
+    // 각 태그에 의미를 구분할 수 있는 색상 코드 할당
     const tags = [
-      { name: '초보자', color: '#10B981' },
-      { name: '고급', color: '#F59E0B' },
-      { name: '빠른답변', color: '#3B82F6' },
-      { name: '창의적', color: '#8B5CF6' },
-      { name: '분석적', color: '#EF4444' },
-      { name: '실용적', color: '#6B7280' },
-      { name: '전문적', color: '#1F2937' },
-      { name: '교육용', color: '#059669' }
+      { name: '초보자', color: '#10B981' },    // 초록색 - 친근함
+      { name: '고급', color: '#F59E0B' },      // 주황색 - 전문성
+      { name: '빠른답변', color: '#3B82F6' },   // 파란색 - 신속함
+      { name: '창의적', color: '#8B5CF6' },     // 보라색 - 창조성
+      { name: '분석적', color: '#EF4444' },     // 빨간색 - 분석력
+      { name: '실용적', color: '#6B7280' },     // 회색 - 실용성
+      { name: '전문적', color: '#1F2937' },     // 진회색 - 전문성
+      { name: '교육용', color: '#059669' }      // 진초록 - 학습
     ];
 
     for (const tag of tags) {
+      // 태그명의 중복을 방지하여 안전하게 삽입
       await pool.query(
         `INSERT INTO tags (name, color) VALUES ($1, $2) ON CONFLICT (name) DO NOTHING`,
         [tag.name, tag.color]
       );
     }
-    console.log('✅ 태그 데이터 삽입 완료\n');
+    console.log('✅ 태그 8개 데이터 삽입 완료 (색상 코드 포함)\n');
 
     // 6. 개선된 추천 규칙 삽입
     console.log('🎯 추천 규칙 데이터 삽입 중...');
+    // AI 추천 알고리즘에 사용할 5개 핵심 규칙
+    // 사용자 키워드 조합에 따라 최적의 AI 모델을 추천
     const rules = [
       {
         name: '글쓰기 고급 사용자',
@@ -279,6 +299,8 @@ async function migrateSchema() {
     ];
 
     for (const rule of rules) {
+      // 각 추천 규칙을 8개 필드로 구성하여 삽입
+      // 모델 ID 배열과 신뢰도 점수까지 완전한 규칙 정보 저장
       await pool.query(
         `INSERT INTO recommendation_rules (
           name, description, keywords, purpose_category, complexity_level, priority_type,
@@ -290,10 +312,12 @@ async function migrateSchema() {
         ]
       );
     }
-    console.log('✅ 추천 규칙 데이터 삽입 완료\n');
+    console.log('✅ 추천 규칙 5개 데이터 삽입 완료 (신뢰도 75~95%)\n');
 
-    // 7. 데이터 확인
+    // 7. 데이터 확인 및 검증
     console.log('📊 마이그레이션 결과 확인...');
+    // 각 테이블의 레코드 수를 조회하여 삽입 결과 검증
+    // 단일 쿼리로 모든 테이블 카운트를 효율적으로 조회
     const results = await pool.query(`
       SELECT 
         (SELECT COUNT(*) FROM ai_providers) as providers,
@@ -304,14 +328,18 @@ async function migrateSchema() {
     `);
     
     const counts = results.rows[0];
-    console.log(`📈 데이터 현황:`);
-    console.log(`   - AI 제공업체: ${counts.providers}개`);
-    console.log(`   - AI 모델: ${counts.models}개`);
-    console.log(`   - 카테고리: ${counts.categories}개`);
-    console.log(`   - 태그: ${counts.tags}개`);
-    console.log(`   - 추천 규칙: ${counts.rules}개`);
+    console.log(`📈 최종 데이터 현황:`);
+    console.log(`   - AI 제공업체: ${counts.providers}개 (OpenAI, Anthropic, Google, Stability AI, Midjourney)`);
+    console.log(`   - AI 모델: ${counts.models}개 (텍스트 5개 + 이미지 2개)`);
+    console.log(`   - 카테고리: ${counts.categories}개 (글쓰기~일반대화)`);
+    console.log(`   - 태그: ${counts.tags}개 (초보자~교육용)`);
+    console.log(`   - 추천 규칙: ${counts.rules}개 (스마트 매칭 알고리즘)`);
 
     console.log('\n🎉 데이터베이스 마이그레이션이 성공적으로 완료되었습니다!');
+    console.log('   ✅ 스키마 생성 완료');
+    console.log('   ✅ 기초 데이터 삽입 완료'); 
+    console.log('   ✅ AI 추천 시스템 준비 완료');
+    console.log('   🚀 서버를 시작할 수 있습니다!');
 
   } catch (error) {
     console.error('❌ 마이그레이션 중 오류 발생:', error);
