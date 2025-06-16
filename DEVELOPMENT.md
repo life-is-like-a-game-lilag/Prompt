@@ -74,6 +74,117 @@
 
 ---
 
+### ✅ T-003: AI Platform 통합 로깅 시스템 구축
+**상태**: DONE  
+**완료일**: 2025-06-16  
+**태그**: `T-003-logging-system-v1.0`
+
+#### 주요 작업 내용
+- [x] Winston 기반 구조화된 로깅 시스템 구축
+- [x] AI API 호출 추적 및 성능 측정 기능
+- [x] 일별 로그 로테이션 및 압축 지원
+- [x] LogExecution 데코레이터 자동 실행 시간 측정
+- [x] TypeScript 타입 안정성 확보
+- [x] 다양한 로그 레벨 지원 (DEBUG, INFO, WARN, ERROR)
+
+#### 구현된 주요 클래스 및 기능
+```typescript
+export class AIPlatformLogger {
+  // 싱글톤 패턴으로 일관된 로깅 동작 보장
+  static getInstance(): AIPlatformLogger
+  
+  // AI API 호출 로깅
+  logApiCall(userId, aiPlatform, endpoint, responseTime, tokenUsage)
+  
+  // API 에러 로깅
+  logApiError(userId, aiPlatform, endpoint, error)
+  
+  // 성능 메트릭 로깅
+  logPerformance(operation, duration, context)
+  
+  // 기본 로깅 메서드들
+  info(message, metadata)
+  warn(message, metadata)
+  error(message, error, metadata)
+  debug(message, metadata)
+}
+
+// 자동 실행 시간 측정 데코레이터
+@LogExecution(operationName)
+```
+
+#### 로깅 메타데이터 구조
+```typescript
+interface LogMetadata {
+  requestId?: string;        // 요청 ID (AI API 호출 추적용)
+  userId?: string;           // 사용자 ID
+  aiPlatform?: string;       // AI 플랫폼 이름
+  endpoint?: string;         // API 엔드포인트
+  responseTime?: number;     // 응답 시간 (밀리초)
+  tokenUsage?: {             // 토큰 사용량
+    input: number;
+    output: number;
+    total: number;
+  };
+  errorCode?: string;        // 에러 코드
+  stack?: string;            // 에러 스택
+  operation?: string;        // 작업 이름
+  duration?: number;         // 실행 시간
+  success?: boolean;         // 성공 여부
+  context?: Record<string, any>; // 추가 컨텍스트
+}
+```
+
+#### 설치된 의존성
+```json
+{
+  "dependencies": {
+    "winston": "^3.15.0",
+    "winston-daily-rotate-file": "^5.0.0"
+  }
+}
+```
+
+#### 로그 파일 구조
+```
+logs/
+├── ai-platform-2025-06-16.log     # 일반 로그 (INFO 이상)
+├── ai-platform-error-2025-06-16.log # 에러 전용 로그
+└── ...                              # 일별 로테이션
+```
+
+#### 핵심 기능 특징
+- **구조화된 로깅**: JSON 포맷으로 검색 및 분석 용이
+- **AI API 추적**: 요청 ID 기반 분산 추적 지원
+- **성능 모니터링**: 응답 시간 및 토큰 사용량 추적
+- **자동 로테이션**: 일별 파일 분할 및 압축 보관
+- **개발/운영 환경 분리**: 환경별 다른 출력 설정
+
+#### 사용 예시
+```typescript
+import { logger } from '@/utils/logger';
+
+// AI API 호출 로깅
+logger.logApiCall('user123', 'OpenAI', '/v1/completions', 1500, {
+  input: 1000, output: 500, total: 1500
+});
+
+// 클래스 메서드에 자동 로깅 적용
+class AIService {
+  @LogExecution('AI Service')
+  async generateText(prompt: string): Promise<string> {
+    // API 호출 로직
+  }
+}
+```
+
+#### 향후 확장 계획
+- [ ] ELK Stack 연동 추가
+- [ ] 실시간 로그 스트리밍 구현
+- [ ] 로그 알림 시스템 구축
+
+---
+
 ### ✅ T-004: 프롬프트/역할 템플릿 관리 및 추천 API 구현
 **상태**: DONE  
 **완료일**: 2025-06-16  
@@ -130,7 +241,7 @@ GET    /api-docs               - Swagger API 문서
 
 ## 🚧 다음 예정 작업
 
-### 📋 T-003: AI 플랫폼 주요 API 연동 및 정보 수집 자동화
+### 📋 T-005: AI 플랫폼 주요 API 연동 및 정보 수집 자동화
 **상태**: BACKLOG  
 **우선순위**: HIGH  
 **예상 기간**: 3-4일
@@ -147,6 +258,7 @@ GET    /api-docs               - Swagger API 문서
 - 각 AI 플랫폼별 SDK 활용
 - 일일 자동 동기화 스케줄러 구현
 - Redis 캐싱으로 API 호출 최적화
+- 구축된 로깅 시스템(T-003) 활용한 API 모니터링
 
 ---
 
@@ -159,15 +271,16 @@ GET    /api-docs               - Swagger API 문서
 - **데이터베이스 테이블**: 10개
 
 ### Git 히스토리
-- **총 커밋**: 6개
-- **태그**: 3개
+- **총 커밋**: 7개
+- **태그**: 4개
 - **브랜치**: main
 
 ### 완료율
 - **T-001**: ✅ 100%
 - **T-002**: ✅ 100%
+- **T-003**: ✅ 100%
 - **T-004**: ✅ 100%
-- **전체 진행률**: 60% (3/5 Tasks 완료)
+- **전체 진행률**: 80% (4/5 Tasks 완료)
 
 ---
 
