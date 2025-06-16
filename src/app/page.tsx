@@ -312,6 +312,134 @@ export default function Home() {
             </form>
           </div>
         </section>
+
+        {/* 등록된 프롬프트 목록 섹션 */}
+        <section className="mb-12 lg:mb-16" aria-labelledby="prompt-list-section" id="prompt-list">
+          <div className="mb-6 lg:mb-8">
+            <h2 id="prompt-list-section" className="text-2xl lg:text-3xl font-bold theme-text-primary mb-3 text-center">
+              📋 등록된 프롬프트
+            </h2>
+            <p className="theme-text-secondary text-center text-sm lg:text-base">
+              저장된 프롬프트를 확인하고 관리하세요
+            </p>
+          </div>
+          
+          {/* 프롬프트 목록 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6" role="list" aria-label="등록된 프롬프트 목록">
+            {/* 샘플 프롬프트 카드 1 */}
+            <article className="bg-white dark:bg-gray-800 rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] group" role="listitem" aria-labelledby="prompt-1-title">
+              <div className="mb-3 lg:mb-4">
+                <div className="flex items-start justify-between mb-2">
+                  <h3 id="prompt-1-title" className="text-lg lg:text-xl font-bold dark:text-white text-gray-900 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    창작 소설 작성 도우미
+                  </h3>
+                  <span className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 ml-2 flex-shrink-0" aria-label="역할: 창작 도우미">
+                    창작 도우미
+                  </span>
+                </div>
+                <p className="dark:text-gray-200 text-gray-600 text-sm lg:text-base line-clamp-2 leading-relaxed">
+                  장르별 소설 창작을 도와주는 전문 프롬프트입니다. 캐릭터 개발부터 플롯 구성까지 체계적으로 안내합니다.
+                </p>
+              </div>
+              
+              <div className="mb-4">
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+                  <p className="dark:text-gray-100 text-gray-800 text-sm font-mono line-clamp-3 leading-relaxed">
+                    당신은 전문 소설가입니다. 사용자가 제공하는 장르와 주제에 맞는 흥미진진한 소설을 창작해주세요. 다음 요소들을 포함해야 합니다: 1) 매력적인 캐릭터 설정 2) 긴장감 있는 플롯 3) 생생한 묘사...
+                  </p>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <div className="flex flex-wrap gap-1.5" role="list" aria-label="태그">
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" role="listitem">글쓰기</span>
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" role="listitem">소설</span>
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" role="listitem">창작</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between text-xs theme-text-secondary mb-4">
+                <span aria-label="생성일">2024년 12월 15일</span>
+                <span aria-label="수정일">수정: 12월 16일</span>
+              </div>
+              
+              <div className="flex gap-2">
+                <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75" aria-label="프롬프트 복사">
+                  📋 복사
+                </button>
+                <button className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75" aria-label="프롬프트 수정">
+                  ✏️ 수정
+                </button>
+                <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75" aria-label="프롬프트 삭제">
+                  🗑️
+                </button>
+              </div>
+            </article>
+            
+            {/* 샘플 프롬프트 카드 2 */}
+            <article className="bg-white dark:bg-gray-800 rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] group" role="listitem" aria-labelledby="prompt-2-title">
+              <div className="mb-3 lg:mb-4">
+                <div className="flex items-start justify-between mb-2">
+                  <h3 id="prompt-2-title" className="text-lg lg:text-xl font-bold dark:text-white text-gray-900 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    기술 문서 작성 전문가
+                  </h3>
+                  <span className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200 ml-2 flex-shrink-0" aria-label="역할: 기술 전문가">
+                    기술 전문가
+                  </span>
+                </div>
+                <p className="dark:text-gray-200 text-gray-600 text-sm lg:text-base line-clamp-2 leading-relaxed">
+                  개발자를 위한 명확하고 체계적인 기술 문서 작성을 도와주는 프롬프트입니다.
+                </p>
+              </div>
+              
+              <div className="mb-4">
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+                  <p className="dark:text-gray-100 text-gray-800 text-sm font-mono line-clamp-3 leading-relaxed">
+                    당신은 경험이 풍부한 기술 문서 작성 전문가입니다. 개발자들이 쉽게 이해할 수 있도록 명확하고 체계적인 기술 문서를 작성해주세요. API 문서, 설치 가이드, 사용법 등을 포함해야 합니다...
+                  </p>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <div className="flex flex-wrap gap-1.5" role="list" aria-label="태그">
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" role="listitem">기술문서</span>
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" role="listitem">개발</span>
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" role="listitem">API</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between text-xs theme-text-secondary mb-4">
+                <span aria-label="생성일">2024년 12월 14일</span>
+                <span aria-label="수정일">수정: 12월 15일</span>
+              </div>
+              
+              <div className="flex gap-2">
+                <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75" aria-label="프롬프트 복사">
+                  📋 복사
+                </button>
+                <button className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75" aria-label="프롬프트 수정">
+                  ✏️ 수정
+                </button>
+                <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75" aria-label="프롬프트 삭제">
+                  🗑️
+                </button>
+              </div>
+            </article>
+            
+            {/* 새 프롬프트 추가 카드 */}
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl lg:rounded-2xl p-6 lg:p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300 cursor-pointer group flex flex-col items-center justify-center text-center min-h-[280px]" role="button" aria-label="새 프롬프트 추가" tabIndex={0}>
+              <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300" aria-hidden="true">
+                <span className="text-3xl lg:text-4xl" role="img" aria-label="플러스 이모지">➕</span>
+              </div>
+              <h3 className="text-lg lg:text-xl font-bold theme-text-primary mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                새 프롬프트 추가
+              </h3>
+              <p className="theme-text-secondary text-sm lg:text-base">
+                위의 등록 폼을 사용해서<br />새로운 프롬프트를 만들어보세요
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );
