@@ -357,16 +357,16 @@ export default function Home() {
             <article className="bg-white dark:bg-gray-800 rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] group" role="listitem" aria-labelledby="prompt-1-title">
               <div className="mb-3 lg:mb-4">
                 <div className="flex items-start justify-between mb-2">
-                  <h3 id="prompt-1-title" className="text-lg lg:text-xl font-bold dark:text-white text-gray-900 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                    창작 소설 작성 도우미
-                  </h3>
+                                     <h3 id="prompt-1-title" className="text-lg lg:text-xl font-bold dark:text-gray-100 text-gray-900 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                     창작 소설 작성 도우미
+                   </h3>
                   <span className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 ml-2 flex-shrink-0" aria-label="역할: 창작 도우미">
                     창작 도우미
                   </span>
                 </div>
-                <p className="dark:text-gray-200 text-gray-600 text-sm lg:text-base line-clamp-2 leading-relaxed">
-                  장르별 소설 창작을 도와주는 전문 프롬프트입니다. 캐릭터 개발부터 플롯 구성까지 체계적으로 안내합니다.
-                </p>
+                                 <p className="dark:text-gray-300 text-gray-600 text-sm lg:text-base line-clamp-2 leading-relaxed">
+                   장르별 소설 창작을 도와주는 전문 프롬프트입니다. 캐릭터 개발부터 플롯 구성까지 체계적으로 안내합니다.
+                 </p>
               </div>
               
               <div className="mb-4">
@@ -407,16 +407,16 @@ export default function Home() {
             <article className="bg-white dark:bg-gray-800 rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] group" role="listitem" aria-labelledby="prompt-2-title">
               <div className="mb-3 lg:mb-4">
                 <div className="flex items-start justify-between mb-2">
-                  <h3 id="prompt-2-title" className="text-lg lg:text-xl font-bold dark:text-white text-gray-900 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                    기술 문서 작성 전문가
-                  </h3>
+                                     <h3 id="prompt-2-title" className="text-lg lg:text-xl font-bold dark:text-gray-100 text-gray-900 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                     기술 문서 작성 전문가
+                   </h3>
                   <span className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200 ml-2 flex-shrink-0" aria-label="역할: 기술 전문가">
                     기술 전문가
                   </span>
                 </div>
-                <p className="dark:text-gray-200 text-gray-600 text-sm lg:text-base line-clamp-2 leading-relaxed">
-                  개발자를 위한 명확하고 체계적인 기술 문서 작성을 도와주는 프롬프트입니다.
-                </p>
+                                 <p className="dark:text-gray-300 text-gray-600 text-sm lg:text-base line-clamp-2 leading-relaxed">
+                   개발자를 위한 명확하고 체계적인 기술 문서 작성을 도와주는 프롬프트입니다.
+                 </p>
               </div>
               
               <div className="mb-4">
