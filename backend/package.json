@@ -11,6 +11,7 @@
     "init-data": "ts-node src/initAiData.ts",
     "test-schema": "ts-node src/testSchema.ts",
     "test-templates": "ts-node src/testTemplateApi.ts",
+    "test-ai": "ts-node src/testAiServices.ts",
     "db-reset": "npm run migrate && npm run init-data",
     "setup": "npm install && npm run db-reset",
     "clean": "rm -rf dist node_modules",
@@ -36,9 +37,12 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "axios": "^1.10.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "openai": "^5.3.0",
     "pg": "^8.16.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
