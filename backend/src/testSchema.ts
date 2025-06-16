@@ -1,3 +1,46 @@
+/**
+ * 🧪 데이터베이스 스키마 테스트 도구
+ * 
+ * 데이터베이스 스키마의 무결성과 초기 데이터 설정을 검증하는 테스트 스크립트입니다.
+ * 마이그레이션 후 데이터베이스 상태를 확인하고 문제를 조기에 발견할 수 있습니다.
+ * 
+ * 주요 테스트 항목:
+ * - 데이터베이스 연결 상태 확인
+ * - 전체 테이블 존재 여부 검증 (10개 테이블)
+ * - 기본 데이터 삽입 상태 확인
+ * - 테이블 간 관계 무결성 검증
+ * - 인덱스 및 제약조건 확인
+ * 
+ * 테스트 대상 테이블:
+ * - ai_providers: AI 제공업체 정보
+ * - ai_models: AI 모델 상세 정보
+ * - categories: 템플릿 카테고리
+ * - tags: 태그 시스템
+ * - prompt_templates: 프롬프트 템플릿
+ * - recommendation_rules: 추천 규칙
+ * - user_sessions: 사용자 세션
+ * - user_feedback: 피드백 데이터
+ * - usage_logs: 사용 로그
+ * - content_versions: 버전 관리
+ * 
+ * 실행 방법:
+ * ```bash
+ * npm run test-schema
+ * # 또는
+ * ts-node src/testSchema.ts
+ * ```
+ * 
+ * 성공 조건:
+ * - 모든 테이블 존재
+ * - 기본 데이터 최소 1개 이상
+ * - 외래키 관계 정상 작동
+ * - 쿼리 실행 시간 < 1초
+ * 
+ * @author 프롬프트 작성기 팀
+ * @version 3.0 (T-004 완료)
+ * @since 2025-06-16
+ */
+
 import { pool } from './db';
 
 async function testSchema() {

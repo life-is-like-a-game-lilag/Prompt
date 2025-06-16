@@ -1,3 +1,32 @@
+/**
+ * 📚 Swagger API 문서화 설정
+ * 
+ * OpenAPI 3.0 표준을 사용하여 REST API 문서를 자동 생성하고 제공하는 모듈입니다.
+ * 개발자와 사용자가 API를 쉽게 이해하고 테스트할 수 있는 인터랙티브 문서를 제공합니다.
+ * 
+ * 주요 기능:
+ * - OpenAPI 3.0 명세서 자동 생성
+ * - 스키마 정의 및 타입 검증
+ * - 인터랙티브 API 테스트 UI
+ * - JSON 형태 API 명세서 제공
+ * - 커스터마이징된 UI 테마
+ * 
+ * 문서 접속:
+ * - Swagger UI: http://localhost:4000/api-docs
+ * - JSON 명세서: http://localhost:4000/api-docs.json
+ * 
+ * 스키마 정의:
+ * - PromptTemplate: 프롬프트 템플릿 구조
+ * - AIModel: AI 모델 정보 구조
+ * - Recommendation: 추천 결과 구조
+ * - ApiResponse: 표준 API 응답 구조
+ * - Feedback: 피드백 시스템 구조
+ * 
+ * @author 프롬프트 작성기 팀
+ * @version 3.0 (T-004 완료)
+ * @since 2025-06-16
+ */
+
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { Express } from 'express';

@@ -1,7 +1,66 @@
+/**
+ * 🔄 데이터베이스 스키마 마이그레이션 도구
+ * 
+ * 프롬프트 작성기의 데이터베이스 스키마를 초기화하고 기본 데이터를 삽입하는 핵심 도구입니다.
+ * 새로운 개발 환경 설정이나 스키마 업데이트 시 사용됩니다.
+ * 
+ * 주요 기능:
+ * - 전체 데이터베이스 스키마 생성 (10개 테이블)
+ * - AI 제공업체 및 모델 정보 초기화
+ * - 카테고리 및 태그 시스템 구축
+ * - 추천 규칙 및 예제 템플릿 생성
+ * - 데이터 무결성 및 관계 설정
+ * 
+ * 마이그레이션 단계:
+ * 1. 스키마 파일(schema.sql) 실행
+ * 2. AI 제공업체 데이터 삽입 (OpenAI, Google, Anthropic 등)
+ * 3. AI 모델 정보 삽입 (GPT-4, Claude 3, Gemini 등)
+ * 4. 카테고리 시스템 구축 (8개 주요 카테고리)
+ * 5. 태그 시스템 구축 (8개 기본 태그)
+ * 6. 추천 규칙 설정 (스마트 매칭용)
+ * 7. 예제 프롬프트 템플릿 생성
+ * 
+ * 실행 방법:
+ * ```bash
+ * npm run migrate
+ * # 또는
+ * ts-node src/migrateSchema.ts
+ * ```
+ * 
+ * 주의사항:
+ * - 기존 데이터 덮어쓸 수 있음 (ON CONFLICT DO NOTHING으로 보호)
+ * - 스키마 변경 시 수동 백업 권장
+ * - PostgreSQL 서버 실행 상태 확인 필요
+ * 
+ * 데이터베이스 구조:
+ * - ai_providers: AI 서비스 제공업체 정보
+ * - ai_models: 개별 AI 모델 상세 정보
+ * - categories: 템플릿 카테고리 분류
+ * - tags: 태그 시스템 (색상 포함)
+ * - prompt_templates: 실제 프롬프트 템플릿
+ * - recommendation_rules: 추천 알고리즘 규칙
+ * - user_sessions: 사용자 세션 관리
+ * - user_feedback: 피드백 및 평점 시스템
+ * - usage_logs: 사용 통계 및 로그
+ * - content_versions: 템플릿 버전 관리
+ * 
+ * @author 프롬프트 작성기 팀
+ * @version 3.0 (T-004 완료)
+ * @since 2025-06-16
+ */
+
 import { pool } from './db';
 import * as fs from 'fs';
 import * as path from 'path';
 
+/**
+ * 메인 마이그레이션 함수
+ * 
+ * 전체 데이터베이스를 초기화하고 기본 데이터를 설정합니다.
+ * 각 단계별로 상세한 로그를 출력하여 진행 상황을 추적할 수 있습니다.
+ * 
+ * @throws Error 마이그레이션 실패 시 상세 에러 정보 제공
+ */
 async function migrateSchema() {
   try {
     console.log('🔄 데이터베이스 스키마 마이그레이션을 시작합니다...\n');
